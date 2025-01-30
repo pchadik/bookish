@@ -1,10 +1,14 @@
 import os
+from dotenv import load_dotenv
+from bs4 import BeautifulSoup
+
+def html_to_text(html_content):
+    """Convert HTML content to plain text."""
+    soup = BeautifulSoup(html_content, 'html.parser')
+    return soup.get_text()
 
 def load_chapters():
     """Load text files from the directory specified by TARGET_BOOK_CHAPTERS environment variable."""
-    
-    import os
-    from dotenv import load_dotenv
     
     # Load environment variables from .env file
     load_dotenv()
@@ -22,7 +26,8 @@ def load_chapters():
         if filename.endswith('.txt'):
             file_path = os.path.join(target_directory, filename)
             with open(file_path, 'r', encoding='utf-8') as file:
-                chapters[filename] = file.read()
+                html_content = file.read()
+                chapters[filename] = html_to_text(html_content)
     
     return chapters
 
